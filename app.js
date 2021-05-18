@@ -52,6 +52,11 @@ app.use(
   })
 );
 
+app.use((req, res, next) => {
+  res.locals.user = req.user;
+  next();
+});
+
 app.set("trust proxy", 1);
 app.use(
   cookieSession({
@@ -63,7 +68,7 @@ app.use(
 );
 app.use(
   session({
-    secret: "secret",
+    secret: process.env.SECRET,
     resave: true,
     saveUninitialized: true,
     cookie: {
@@ -74,13 +79,13 @@ app.use(
 );
 
 // -------- PASSPORT --------
-app.use(
-  session({
-    secret: process.env.SECRET,
-    resave: true,
-    saveUninitialized: true,
-  })
-);
+// app.use(
+//   session({
+//     secret: process.env.SECRET,
+//     resave: true,
+//     saveUninitialized: true,
+//   })
+// );
 
 passport.serializeUser((user, callback) => {
   callback(null, user._id);
