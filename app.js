@@ -10,6 +10,7 @@ const flash = require("connect-flash");
 const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+const cookieSession = require('cookie-session')
 
 // -------- PORT --------
 const PORT = process.env.PORT || 5000;
