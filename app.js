@@ -28,18 +28,19 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// -------- CORS --------
+app.use(flash());
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method"
-  );
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
-  res.header("Allow", "GET, POST, OPTIONS, PUT, DELETE");
-  next();
-});
+app.set("trust proxy", 1);
+app.use(
+  cookieSession({
+    name: "session",
+    keys: ["key1", "key2"],
+    sameSite: "none",
+    secure: true,
+  })
+);
+
+// -------- CORS --------
 
 app.use(
   cors({
@@ -52,24 +53,10 @@ app.use(
   })
 );
 
-app.use((req, res, next) => {
-  res.locals.user = req.user;
-  next();
-});
-
-app.set("trust proxy", 1);
-app.use(
-  cookieSession({
-    name: "session",
-    keys: ["key1", "key2"],
-    sameSite: "none",
-    secure: true,
-  })
-);
 app.use(
   session({
-    secret: process.env.SECRET,
-    resave: false,
+    secret: `${process.env.SECRET}`,
+    resave: true,
     saveUninitialized: true,
     cookie: {
       sameSite: "none",
@@ -77,15 +64,6 @@ app.use(
     },
   })
 );
-
-// -------- PASSPORT --------
-// app.use(
-//   session({
-//     secret: process.env.SECRET,
-//     resave: true,
-//     saveUninitialized: true,
-//   })
-// );
 
 passport.serializeUser((user, callback) => {
   callback(null, user._id);
@@ -101,7 +79,7 @@ passport.deserializeUser((id, callback) => {
     });
 });
 
-app.use(flash());
+
 
 passport.use(
   new LocalStrategy(
