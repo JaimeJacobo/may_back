@@ -36,7 +36,7 @@ app.use(
   cors({
     methods: ["GET", "POST"],
     credentials: true,
-    origin: ["http://localhost:3000", "https://may-front.herokuapp.com"],
+    origin: ["http://localhost:3000", "https://may-front-back.herokuapp.com"],
   })
 );
 
