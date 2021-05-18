@@ -10,7 +10,6 @@ const flash = require("connect-flash");
 const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const cookieSession = require("cookie-session");
 
 // -------- PORT --------
 const PORT = process.env.PORT || 5000;
@@ -28,57 +27,27 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(flash());
-
-app.set("trust proxy", 1);
-app.use(
-  cookieSession({
-    name: "__session",
-    keys: ["key1"],
-      maxAge: 24 * 60 * 60 * 100,
-      secure: true,
-      httpOnly: true,
-      sameSite: 'none'
-  })
-);
-
+const path = require("path");
+app.use(express.static(path.join(__dirname, "public")));
 
 // -------- CORS --------
 
-// app.use(
-//   cors({
-//     credentials: true,
-//     origin: [
-//       "http://localhost:3000",
-//       "https://may-front.herokuapp.com/",
-//       "https://may-front.herokuapp.com",
-//     ],
-//   })
-// );
+app.use(
+  cors({
+    methods: ["GET", "POST"],
+    credentials: true,
+    origin: ["http://localhost:3000", "https://may-front.herokuapp.com"],
+  })
+);
 
-// app.use(cors());
-
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "https://may-front.herokuapp.com");
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
-
-// app.use(
-//   session({
-//     secret: `${process.env.SECRET}`,
-//     resave: true,
-//     saveUninitialized: true,
-//     cookie: {
-//       sameSite: "none",
-//       secure: true,
-//     },
-//   })
-// );
+// -------- PASSPORT --------
+app.use(
+  session({
+    secret: process.env.SECRET,
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
 passport.serializeUser((user, callback) => {
   callback(null, user._id);
@@ -93,6 +62,8 @@ passport.deserializeUser((id, callback) => {
       callback(err);
     });
 });
+
+app.use(flash());
 
 passport.use(
   new LocalStrategy(
@@ -128,6 +99,11 @@ app.use(passport.session());
 
 app.use("/", require("./routes/index.routes"));
 app.use("/auth", require("./routes/auth.routes"));
+
+app.use((req, res, next) => {
+  // If no routes match, send them the React HTML.
+  res.sendFile(__dirname + "/public/index.html");
+});
 
 app.listen(PORT, () => {
   console.log(chalk.green.inverse(`Puerto activado en ${PORT}`));

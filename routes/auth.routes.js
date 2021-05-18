@@ -59,10 +59,6 @@ router.post("/login", (req, res, next) => {
       if (err) {
         res.send({ message: "Something went bad with req.login", err });
       } else {
-        res.cookie("cookie2", "value2", {
-          sameSite: "none",
-          secure: true,
-        });
         res.status(200).json({ message: "Log in succesful", user });
       }
     });
