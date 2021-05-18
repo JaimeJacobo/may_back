@@ -42,19 +42,19 @@ app.use(
 
 // -------- CORS --------
 
-app.use(
-  cors({
-    credentials: true,
-    origin: [
-      "http://localhost:3000",
-      "https://may-front.herokuapp.com/",
-      "https://may-front.herokuapp.com",
-    ],
-  })
-);
+// app.use(
+//   cors({
+//     credentials: true,
+//     origin: [
+//       "http://localhost:3000",
+//       "https://may-front.herokuapp.com/",
+//       "https://may-front.herokuapp.com",
+//     ],
+//   })
+// );
 
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "frontendURL");
+  res.header("Access-Control-Allow-Origin", "https://may-front.herokuapp.com");
   res.header("Access-Control-Allow-Credentials", true);
   res.header(
     "Access-Control-Allow-Headers",
