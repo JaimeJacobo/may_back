@@ -10,7 +10,7 @@ const flash = require("connect-flash");
 const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const cookieSession = require('cookie-session')
+const cookieSession = require("cookie-session");
 
 // -------- PORT --------
 const PORT = process.env.PORT || 5000;
@@ -30,9 +30,19 @@ app.use(cookieParser());
 
 // -------- CORS --------
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method"
+  );
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
+  res.header("Allow", "GET, POST, OPTIONS, PUT, DELETE");
+  next();
+});
+
 app.use(
   cors({
-    methods: ["GET", "POST"],
     credentials: true,
     origin: [
       "http://localhost:3000",
