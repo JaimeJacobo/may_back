@@ -68,17 +68,17 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.use(
-  session({
-    secret: `${process.env.SECRET}`,
-    resave: true,
-    saveUninitialized: true,
-    cookie: {
-      sameSite: "none",
-      secure: true,
-    },
-  })
-);
+// app.use(
+//   session({
+//     secret: `${process.env.SECRET}`,
+//     resave: true,
+//     saveUninitialized: true,
+//     cookie: {
+//       sameSite: "none",
+//       secure: true,
+//     },
+//   })
+// );
 
 passport.serializeUser((user, callback) => {
   callback(null, user._id);
