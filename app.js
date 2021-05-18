@@ -1,41 +1,45 @@
-require('dotenv').config()
+require("dotenv").config();
 
-const bodyParser = require('body-parser')
-const cookieParser = require('cookie-parser')
-const express = require('express')
-const chalk = require('chalk')
-const cors = require('cors')
-const bcrypt = require('bcrypt')
-const flash = require('connect-flash')
-const session = require('express-session')
-const passport = require('passport')
-const LocalStrategy = require('passport-local').Strategy
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const express = require("express");
+const chalk = require("chalk");
+const cors = require("cors");
+const bcrypt = require("bcrypt");
+const flash = require("connect-flash");
+const session = require("express-session");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
 
 // -------- PORT --------
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5000;
 
 // -------- MODELS --------
-const User = require('./models/User.models')
+const User = require("./models/User.models");
 
 // -------- MONGOOSE --------
-require('./configs/mongoose')
+require("./configs/mongoose");
 
-const app = express()
+const app = express();
 
 // -------- Middleware setup --------
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(cookieParser())
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 // -------- CORS --------
 
 app.use(
   cors({
-    methods: ['GET', 'POST'],
+    methods: ["GET", "POST"],
     credentials: true,
-    origin: ['http://localhost:3000'],
+    origin: [
+      "http://localhost:3000",
+      "https://may-front.herokuapp.com/",
+      "https://may-front.herokuapp.com",
+    ],
   })
-)
+);
 
 // -------- PASSPORT --------
 app.use(
@@ -44,23 +48,23 @@ app.use(
     resave: true,
     saveUninitialized: true,
   })
-)
+);
 
 passport.serializeUser((user, callback) => {
-  callback(null, user._id)
-})
+  callback(null, user._id);
+});
 
 passport.deserializeUser((id, callback) => {
   User.findById(id)
     .then((result) => {
-      callback(null, result)
+      callback(null, result);
     })
     .catch((err) => {
-      callback(err)
-    })
-})
+      callback(err);
+    });
+});
 
-app.use(flash())
+app.use(flash());
 
 passport.use(
   new LocalStrategy(
@@ -75,28 +79,28 @@ passport.use(
           if (!user) {
             return next(null, false, {
               message: `Incorrect username or password`,
-            })
+            });
           }
           if (!bcrypt.compareSync(password, user.password)) {
             return next(null, false, {
               message: `Incorrect username or password`,
-            })
+            });
           }
-          return next(null, user)
+          return next(null, user);
         })
         .catch((err) => {
-          next(err)
-        })
+          next(err);
+        });
     }
   )
-)
+);
 
-app.use(passport.initialize())
-app.use(passport.session())
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.use('/', require('./routes/index.routes'))
-app.use('/auth', require('./routes/auth.routes'))
+app.use("/", require("./routes/index.routes"));
+app.use("/auth", require("./routes/auth.routes"));
 
 app.listen(PORT, () => {
-  console.log(chalk.green.inverse(`Puerto activado en ${PORT}`))
-})
+  console.log(chalk.green.inverse(`Puerto activado en ${PORT}`));
+});
