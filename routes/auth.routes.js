@@ -55,22 +55,18 @@ router.post('/login', (req, res, next) => {
       return
     }
 
-    // res.cookie('sameSite', 'none', {
-    //   sameSite: true,
-    //   secure: true,
-    // })
-
     req.login(user, (err) => {
       if (err) {
         res.send({ message: 'Something went bad with req.login', err })
       } else {
-        User.findById(user._id)
-          .then((result) => {
-            res.send({ message: 'Log in succesful', result })
-          })
-          .catch(() => {
-            res.send({ message: 'Error finding the user' })
-          })
+        // User.findById(user._id)
+        //   .then((result) => {
+        //     res.send({ message: 'Log in succesful', result })
+        //   })
+        //   .catch(() => {
+        //     res.send({ message: 'Error finding the user' })
+        //   })
+        res.status(200).json({ message: 'Log in succesful', user });
       }
     })
   })(req, res, next)
