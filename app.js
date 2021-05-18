@@ -53,7 +53,7 @@ app.use(
 //   })
 // );
 
-app.use(cors());
+// app.use(cors());
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "https://may-front.herokuapp.com/");
